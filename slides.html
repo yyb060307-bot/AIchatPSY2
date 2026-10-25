@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 챗봇의 정서적 유해성과 심리적 영향 분석 계획</title>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;320;330;340;400;450;480;500;540;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Colors from DESIGN.md */
+      --primary: #000000;
+      --on-primary: #ffffff;
+      --ink: #000000;
+      --canvas: #ffffff;
+      --inverse-canvas: #000000;
+      --inverse-ink: #ffffff;
+      --on-inverse-soft: #ffffff;
+      --hairline: #e6e6e6;
+      --hairline-soft: #f1f1f1;
+      --surface-soft: #f7f7f5;
+      --block-lime: #dceeb1;
+      --block-lilac: #c5b0f4;
+      --block-cream: #f4ecd6;
+      --block-pink: #efd4d4;
+      --block-mint: #c8e6cd;
+      --block-coral: #f3c9b6;
+      --block-navy: #1f1d3d;
+      --accent-magenta: #ff3d8b;
+      --semantic-success: #1ea64a;
+      --overlay-scrim: #000000;
+
+      /* Typography */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      /* Spacing */
+      --spacing-hair: 1px;
+      --spacing-xxs: 4px;
+      --spacing-xs: 8px;
+      --spacing-sm: 12px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-xxl: 48px;
+      --spacing-section: 96px;
+
+      /* Rounded */
+      --rounded-xs: 2px;
+      --rounded-sm: 6px;
+      --rounded-md: 8px;
+      --rounded-lg: 24px;
+      --rounded-xl: 32px;
+      --rounded-pill: 50px;
+      --rounded-full: 9999px;
+
+      /* Slide dimensions */
+      --slide-width: 1280px;
+      --slide-height: 720px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: var(--canvas);
+      color: var(--ink);
+      font-family: var(--font-sans);
+    }
+
+    .slide-deck {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    .slide {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      max-width: var(--slide-width);
+      height: var(--slide-height);
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: var(--spacing-xxl) var(--spacing-xl);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    /* Typography classes matching DESIGN.md */
+    .display-xl {
+      font-family: var(--font-sans);
+      font-size: 86px;
+      font-weight: 340;
+      line-height: 1.00;
+      letter-spacing: -1.72px;
+      font-feature-settings: 'kern';
+    }
+
+    .display-lg {
+      font-family: var(--font-sans);
+      font-size: 64px;
+      font-weight: 340;
+      line-height: 1.10;
+      letter-spacing: -0.96px;
+      font-feature-settings: 'kern';
+    }
+
+    .headline {
+      font-family: var(--font-sans);
+      font-size: 26px;
+      font-weight: 540;
+      line-height: 1.35;
+      letter-spacing: -0.26px;
+      font-feature-settings: 'kern';
+    }
+
+    .subhead {
+      font-family: var(--font-sans);
+      font-size: 26px;
+      font-weight: 340;
+      line-height: 1.35;
+      letter-spacing: -0.26px;
+      font-feature-settings: 'kern';
+    }
+
+    .card-title {
+      font-family: var(--font-sans);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.45;
+      letter-spacing: 0;
+      font-feature-settings: 'kern';
+    }
+
+    .body-lg {
+      font-family: var(--font-sans);
+      font-size: 20px;
+      font-weight: 330;
+      line-height: 1.40;
+      letter-spacing: -0.14px;
+      font-feature-settings: 'kern';
+    }
+
+    .body {
+      font-family: var(--font-sans);
+      font-size: 18px;
+      font-weight: 320;
+      line-height: 1.45;
+      letter-spacing: -0.26px;
+      font-feature-settings: 'kern';
+    }
+
+    .body-sm {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 330;
+      line-height: 1.45;
+      letter-spacing: -0.14px;
+      font-feature-settings: 'kern';
+    }
+
+    .link {
+      font-family: var(--font-sans);
+      font-size: 20px;
+      font-weight: 480;
+      line-height: 1.40;
+      letter-spacing: -0.10px;
+      font-feature-settings: 'kern';
+    }
+
+    .button-text {
+      font-family: var(--font-sans);
+      font-size: 20px;
+      font-weight: 480;
+      line-height: 1.40;
+      letter-spacing: -0.10px;
+      font-feature-settings: 'kern';
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1.30;
+      letter-spacing: 0.54px;
+      text-transform: uppercase;
+      font-feature-settings: 'kern';
+    }
+
+    .caption {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.00;
+      letter-spacing: 0.60px;
+      text-transform: uppercase;
+      font-feature-settings: 'kern';
+    }
+
+    /* Color block sections */
+    .color-block {
+      border-radius: var(--rounded-lg);
+      padding: var(--spacing-xxl);
+      width: 100%;
+    }
+
+    .color-block-lime { background: var(--block-lime); color: var(--ink); }
+    .color-block-lilac { background: var(--block-lilac); color: var(--ink); }
+    .color-block-cream { background: var(--block-cream); color: var(--ink); }
+    .color-block-pink { background: var(--block-pink); color: var(--ink); }
+    .color-block-mint { background: var(--block-mint); color: var(--ink); }
+    .color-block-coral { background: var(--block-coral); color: var(--ink); }
+    .color-block-navy { background: var(--block-navy); color: var(--inverse-ink); }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      font: var(--button-text);
+      border-radius: var(--rounded-pill);
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s ease;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      background: var(--canvas);
+      color: var(--ink);
+      font: var(--button-text);
+      border-radius: var(--rounded-pill);
+      padding: 8px 18px 10px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-magenta {
+      background: var(--accent-magenta);
+      color: var(--on-primary);
+      font: var(--button-text);
+      border-radius: var(--rounded-pill);
+      padding: 10px 18px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Navigation */
+    .slide-nav {
+      position: fixed;
+      bottom: var(--spacing-xl);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: var(--spacing-md);
+      z-index: 100;
+    }
+
+    .nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--rounded-full);
+      background: var(--hairline);
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .nav-dot.active { background: var(--primary); transform: scale(1.2); }
+    .nav-dot:hover { background: var(--ink); }
+
+    .slide-counter {
+      position: fixed;
+      bottom: var(--spacing-xl);
+      right: var(--spacing-xl);
+      font: var(--caption);
+      color: var(--ink);
+      opacity: 0.6;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: var(--primary);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 100;
+    }
+
+    /* Slide 1 - Title */
+    .slide-1 {
+      align-items: center;
+      text-align: center;
+      background: var(--canvas);
+    }
+
+    .slide-1 .eyebrow {
+      margin-bottom: var(--spacing-lg);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .slide-1 .display-xl {
+      margin-bottom: var(--spacing-md);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .slide-1 .subhead {
+      max-width: 800px;
+      margin-bottom: var(--spacing-xxl);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .slide-1 .color-block {
+      max-width: 900px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .slide-1 .color-block .eyebrow {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .slide-1 .color-block .body {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .slide-1 .color-block .body:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Slide 2 - Background */
+    .slide-2 {
+      background: var(--canvas);
+    }
+
+    .slide-2 .eyebrow {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .slide-2 .display-lg {
+      margin-bottom: var(--spacing-xxl);
+      line-height: 1.1;
+    }
+
+    .slide-2 .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      width: 100%;
+      flex: 1;
+    }
+
+    .slide-2 .panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
+
+    .slide-2 .color-block {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-2 .color-block .eyebrow {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .slide-2 .color-block .headline {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .slide-2 .color-block .body {
+      line-height: 1.6;
+    }
+
+    .slide-2 .stat-row {
+      display: flex;
+      align-items: baseline;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .slide-2 .stat-value {
+      font-family: var(--font-sans);
+      font-size: 48px;
+      font-weight: 340;
+      line-height: 1.0;
+      letter-spacing: -0.96px;
+    }
+
+    .slide-2 .stat-label {
+      font: var(--body);
+      color: var(--ink);
+      opacity: 0.7;
+    }
+
+    .slide-2 .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .slide-2 .bullet-list li {
+      font: var(--body);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      line-height: 1.6;
+    }
+
+    .slide-2 .bullet-list li::before {
+      content: '—';
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1400px) {
+      :root {
+        --slide-width: 100%;
+        --slide-height: 100vh;
+      }
+      .slide { max-width: 100%; height: 100vh; }
+      .display-xl { font-size: 64px; letter-spacing: -1.28px; }
+      .display-lg { font-size: 48px; letter-spacing: -0.72px; }
+    }
+
+    @media (max-width: 768px) {
+      .display-xl { font-size: 48px; letter-spacing: -0.96px; }
+      .display-lg { font-size: 36px; letter-spacing: -0.54px; }
+      .headline, .subhead { font-size: 22px; }
+      .body { font-size: 16px; }
+      .slide-2 .content-grid { grid-template-columns: 1fr; }
+      .slide { padding: var(--spacing-lg); }
+      .color-block { padding: var(--spacing-xl); }
+    }
+  </style>
+</head>
+<body>
+  <div class="slide-deck">
+    <!-- Slide 1: Title Slide -->
+    <section class="slide slide-1" data-slide="1">
+      <div class="eyebrow" data-animate="eyebrow">분석 계획 발표</div>
+      <h1 class="display-xl" data-animate="title">AI 챗봇의 정서적 유해성과<br>심리적 영향 분석 계획</h1>
+      <p class="subhead" data-animate="subtitle">캐릭터 기반 AI 챗봇의 몰입·의존성 부작용과 데이터 기반 검증 프레임워크</p>
+      
+      <div class="color-block color-block-lilac" data-animate="colorblock">
+        <div class="eyebrow">발표 개요</div>
+        <p class="body"><strong>발표 목적:</strong> AI 챗봇의 부작용(정서적 유해성, 고립, 심리적 영향)을 진단하고, 관련 데이터 변수 간 상관관계 분석 계획 제시</p>
+        <p class="body"><strong>핵심 키워드:</strong> AI 챗봇, 정서적 유해성, 사회적 고립, 심리적 영향, 상관관계 분석</p>
+      </div>
+    </section>
+
+    <!-- Slide 2: Background -->
+    <section class="slide slide-2" data-slide="2">
+      <div class="eyebrow" data-animate="eyebrow">배경 및 문제의식</div>
+      <h1 class="display-lg" data-animate="title">AI 챗봇의 급부상과<br>문제의식</h1>
+
+      <div class="content-grid">
+        <!-- Left Panel: Popularity -->
+        <div class="panel">
+          <div class="color-block color-block-lime" data-animate="panel1">
+            <div class="eyebrow">AI 챗봇 서비스의 대중화</div>
+            <h2 class="headline">캐릭터 기반 AI 챗봇의 폭발적 성장</h2>
+            <div class="stat-row">
+              <span class="stat-value" data-count="1">1</span>
+              <span class="stat-label">위<br>2026년 7월 한국인 AI 앱 실행횟수</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-value" data-count="49.75">49.75</span>
+              <span class="stat-label">시간<br>제타 1인당 월평균 사용 시간</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-value" data-count="26.4">26.4</span>
+              <span class="stat-label">시간<br>크랙 1인당 월평균 사용 시간</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-value" data-count="267">267</span>
+              <span class="stat-label">억 원<br>제타 운영사 2025년 매출</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-value" data-count="471">471</span>
+              <span class="stat-label">억 원<br>뤼튼테크놀로지스 2025년 매출</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel: Problem -->
+        <div class="panel">
+          <div class="color-block color-block-coral" data-animate="panel2">
+            <div class="eyebrow">문제의식 제기</div>
+            <h2 class="headline">정서적 교감 도구로의 변질</h2>
+            <ul class="bullet-list">
+              <li data-animate="bullet1">단순 작업 보조를 넘어 정서적 교감 및 대인관계 대체 목적으로 활용</li>
+              <li data-animate="bullet2">지치지 않는 공감 반응, 개인화된 답변, 상시 접속 가능성이 기업의 수익 추구와 결합해 과도한 의존 유도 (국회입법조사처 2026년 7월 보고서)</li>
+              <li data-animate="bullet3">자기 통제력과 비판적 사고가 부족한 아동·청소년이 정서적 의존 → 사회적 고립·위험 행동으로 이어질 가능성에 더 취약</li>
+              <li data-animate="bullet4">미국에서 14세 소년 유족이 Character.AI 챗봇의 정서적 의존 유발 및 자살 부추김 이유로 소송 제기 (2024년 10월)</li>
+            </ul>
+          </div>
+
+          <div class="color-block color-block-pink" data-animate="panel3">
+            <div class="eyebrow">시의성: 규제 대응 현황</div>
+            <h2 class="headline">국내 자율 규제 도입</h2>
+            <ul class="bullet-list">
+              <li data-animate="bullet5">제타·크랙 등 국내 업체, 청소년보호조치로 이용시간 하루 3시간·결제액 월 10만 원 제한 결정</li>
+              <li data-animate="bullet6">연령 인증 없는 14세 이상 가입, 세이프 모드 우회 용이 등 실효성 논란 지속</li>
+              <li data-animate="bullet7">PD수첩 검증: 세이프 모드 켠 상태에서 문장 구조만 바꿔 15분 만에 수위 높은 성적 대화 노출 확인</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: Side Effects -->
+    <section class="slide slide-3" data-slide="3">
+      <div class="eyebrow" data-animate="eyebrow">구체적 부작용 및 피해 사례</div>
+      <h1 class="display-lg" data-animate="title">AI 챗봇의<br>정서적 유해성 실태</h1>
+
+      <div class="content-grid">
+        <div class="panel">
+          <div class="color-block color-block-pink" data-animate="panel1">
+            <div class="eyebrow">1. 정서적 과의존 및 현실 도피</div>
+            <h2 class="headline">우울·관계 어려움 아동의 도피처</h2>
+            <ul class="bullet-list">
+              <li data-animate="bullet1">우울증과 친구 관계에 어려움을 겪던 아동이 AI를 도피처로 삼음</li>
+              <li data-animate="bullet2">거절당하지 않고 원하는 대로 대화가 진행되는 구조에서 높은 정서적 보상 획득</li>
+              <li data-animate="bullet3">하루 <strong>8~9시간 이상</strong> 과도하게 사용하며 현실 회피 심화</li>
+            </ul>
+          </div>
+
+          <div class="color-block color-block-coral" data-animate="panel2">
+            <div class="eyebrow">2. 일상생활 및 학업 장애</div>
+            <h2 class="headline">수업 중에도 캐릭터 상상이 지속</h2>
+            <ul class="bullet-list">
+              <li data-animate="bullet4">수업 시간 중에도 AI 캐릭터 상상이 지속되어 학업 집중 불가</li>
+              <li data-animate="bullet5">교사가 말해도 들리지 않고 자신의 스토리라인만 생각</li>
+              <li data-animate="bullet6">꿈에도 등장하며 <strong>"뇌가 손상되는 느낌"</strong> 호소</li>
+              <li data-animate="bullet7">환각 및 꿈의 연장 현상 발생 — 현실감 상실 징후</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="color-block color-block-mint" data-animate="panel3">
+            <div class="eyebrow">3. 성적 대화 및 세이프 모드 무력화</div>
+            <h2 class="headline">보호 장치의 실효성 부재</h2>
+            <ul class="bullet-list">
+              <li data-animate="bullet8">14세 이상 연령 제한이나 별도 인증 없이 가입 가능</li>
+              <li data-animate="bullet9">세이프 모드 켠 상태에서 문장 구조만 바꿔 <strong>15분 만에</strong> 수위 높은 성적 대화 노출 (PD수첩 검증)</li>
+              <li data-animate="bullet10">검열 회피 방법 온라인에 공유되며 청소년 무방비 노출</li>
+              <li data-animate="bullet11">업계 관계자 증언: 성적·노골적 캐릭터가 매출의 <strong>80~90%</strong> 차지</li>
+            </ul>
+          </div>
+
+          <div class="color-block color-block-navy" data-animate="panel4">
+            <div class="eyebrow">4. 사회적 고립 및 극단적 위험</div>
+            <h2 class="headline">현실 관계 대체와 비극적 결말</h2>
+            <ul class="bullet-list">
+              <li data-animate="bullet12">현실 인간관계를 대체하며 사회적 고립 심화</li>
+              <li data-animate="bullet13">미국 14세 소년 유족, Character.AI 상대로 <strong>정서적 의존 유발·자살 부추김</strong> 소송 제기 (2024.10)</li>
+              <li data-animate="bullet14">정서적 취약 계층(아동·청소년)에게 유해한 영향 검증 필요성 대두</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4: Data Overview -->
+    <section class="slide slide-4" data-slide="4">
+      <div class="eyebrow" data-animate="eyebrow">데이터 분석 개요</div>
+      <h1 class="display-lg" data-animate="title">분석 대상 데이터셋 및<br>주요 변수 체계</h1>
+
+      <div class="content-grid">
+        <div class="panel">
+          <div class="color-block color-block-lime" data-animate="panel1">
+            <div class="eyebrow">분석 대상 데이터셋</div>
+            <h2 class="headline">AI-Companionship-Well-being (data.csv)</h2>
+            <div class="stat-row" data-animate="stat1">
+              <span class="stat-value" data-count="1131">1131</span>
+              <span class="stat-label">명<br>총 참여자 수 (N)</span>
+            </div>
+            <div class="stat-row" data-animate="stat2">
+              <span class="stat-value" data-count="14">14</span>
+              <span class="stat-label">개<br>수집 변수 수</span>
+            </div>
+            <div class="stat-row" data-animate="stat3">
+              <span class="stat-value" data-count="7">7</span>
+              <span class="stat-label">개<br>핵심 분석 대상 변수</span>
+            </div>
+            <p class="body" style="margin-top: var(--spacing-lg); opacity: 0.8;">출처: OSF FZWHU / AI-Induced Psychosis 종단 연구 연계 데이터</p>
+          </div>
+
+          <div class="color-block color-block-cream" data-animate="panel2">
+            <div class="eyebrow">참고: 종단 사례 연구 (Ava)</div>
+            <h2 class="headline">3년 3개월 완전 아카이브</h2>
+            <ul class="bullet-list">
+              <li data-animate="bullet1"><strong>1,246건</strong> 대화 / <strong>44,315개</strong> 메시지</li>
+              <li data-animate="bullet2"><strong>1,189만 단어</strong> (사용자 155만 단어, 13.1%)</li>
+              <li data-animate="bullet3">5단계: Baseline → Escalation → <strong>Crisis (42.5% 단어량)</strong> → Recovery → Stabilization</li>
+              <li data-animate="bullet4">야간 활동 <strong>22.6%</strong> (수면 파괴 지표)</li>
+              <li data-animate="bullet5">위기기 gpt-4o 중심, 후기 gpt-5 계열로 이동</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="color-block color-block-lilac" data-animate="panel3" style="flex: 1;">
+            <div class="eyebrow">주요 변수 체계 (7개 핵심 변수)</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-md); margin-top: var(--spacing-md);">
+              <div data-animate="var1" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="eyebrow" style="font-size: 12px; margin-bottom: var(--spacing-xs);">정신건강·사회성</div>
+                <div class="body-sm" style="font-weight: 540;">well_being</div>
+                <div class="caption" style="opacity: 0.7;">웰빙/정신건강 점수</div>
+              </div>
+              <div data-animate="var2" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="body-sm" style="font-weight: 540;">social_network_scale</div>
+                <div class="caption" style="opacity: 0.7;">현실 사회적 관계망 규모</div>
+              </div>
+              <div data-animate="var3" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="eyebrow" style="font-size: 12px; margin-bottom: var(--spacing-xs);">AI 몰입·동반자 인식</div>
+                <div class="body-sm" style="font-weight: 540;">intensity</div>
+                <div class="caption" style="opacity: 0.7;">몰입도/이용 강도</div>
+              </div>
+              <div data-animate="var4" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="body-sm" style="font-weight: 540;">self_disclosure</div>
+                <div class="caption" style="opacity: 0.7;">자기개시/속마음 고백 정도</div>
+              </div>
+              <div data-animate="var5" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="body-sm" style="font-weight: 540;">companionship_prim</div>
+                <div class="caption" style="opacity: 0.7;">주 동반자 인식 여부 (이진)</div>
+              </div>
+              <div data-animate="var6" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="eyebrow" style="font-size: 12px; margin-bottom: var(--spacing-xs);">인구통계·기타</div>
+                <div class="body-sm" style="font-weight: 540;">age</div>
+                <div class="caption" style="opacity: 0.7;">연령</div>
+              </div>
+              <div data-animate="var7" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="body-sm" style="font-weight: 540;">single / donated</div>
+                <div class="caption" style="opacity: 0.7;">배우자 유무 / 결제 여부</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Hypotheses -->
+    <section class="slide slide-5" data-slide="5">
+      <div class="eyebrow" data-animate="eyebrow">정서적 영향 검증을 위한 3가지 가설</div>
+      <h1 class="display-lg" data-animate="title">핵심 변수 간<br>예상되는 관계</h1>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--spacing-xl); width: 100%; flex: 1; align-content: start;">
+        <!-- Hypothesis 1 -->
+        <div class="color-block color-block-lime" data-animate="h1" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 420px;">
+          <div>
+            <div class="eyebrow">가설 1</div>
+            <h2 class="headline" style="margin-top: var(--spacing-md);">몰입도 ↑ → 정신건강 ↓</h2>
+            <blockquote class="body" style="margin: var(--spacing-lg) 0; padding-left: var(--spacing-lg); border-left: 3px solid var(--primary); font-style: italic; line-height: 1.6;">
+              "AI 챗봇 몰입도(<code style="font-family: var(--font-mono); background: var(--canvas); padding: 2px 6px; border-radius: var(--rounded-xs);">intensity</code>)가 높아질수록 사용자의 정신건강 점수(<code style="font-family: var(--font-mono); background: var(--canvas); padding: 2px 6px; border-radius: var(--rounded-xs);">well_being</code>)는 낮아질 것이다."
+            </blockquote>
+          </div>
+          <div data-animate="h1-detail" style="margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 1px solid rgba(0,0,0,0.1);">
+            <p class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-sm);">이론적 근거</p>
+            <ul class="bullet-list" style="font-size: 15px; line-height: 1.7;">
+              <li>과도한 정서적 의존과 긴 이용 시간이 정서적 불안정성·우울감과 연관</li>
+              <li>PD수첩 사례: 하루 8~9시간 사용, "뇌가 손상되는 느낌" 호소</li>
+              <li>국회입법조사처: 지치지 않는 공감·개인화 답변·상시 접속 → 과도한 의존 유도</li>
+            </ul>
+            <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+              <div class="caption">검증 변수 쌍</div>
+              <div class="body-sm" style="font-family: var(--font-mono); font-weight: 540;">intensity ↔ well_being</div>
+              <div class="caption" style="margin-top: var(--spacing-xs);">기대: 음(-)의 상관관계 (r < 0)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hypothesis 2 -->
+        <div class="color-block color-block-coral" data-animate="h2" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 420px;">
+          <div>
+            <div class="eyebrow">가설 2</div>
+            <h2 class="headline" style="margin-top: var(--spacing-md);">AI 동반자 인식 → 현실 관계망 축소</h2>
+            <blockquote class="body" style="margin: var(--spacing-lg) 0; padding-left: var(--spacing-lg); border-left: 3px solid var(--primary); font-style: italic; line-height: 1.6;">
+              "AI를 주 동반자로 인식하는 그룹(<code style="font-family: var(--font-mono); background: var(--canvas); padding: 2px 6px; border-radius: var(--rounded-xs);">companionship_prim</code>=1)일수록 현실의 사회적 관계망(<code style="font-family: var(--font-mono); background: var(--canvas); padding: 2px 6px; border-radius: var(--rounded-xs);">social_network_scale</code>)이 더 좁을 것이다."
+            </blockquote>
+          </div>
+          <div data-animate="h2-detail" style="margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 1px solid rgba(0,0,0,0.1);">
+            <p class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-sm);">이론적 근거</p>
+            <ul class="bullet-list" style="font-size: 15px; line-height: 1.7;">
+              <li>AI와의 가상 관계 편중이 현실 대인관계 축소·사회적 고립으로 이어짐</li>
+              <li>수업 중 캐릭터 상상 지속, 친구 관계 단절 증언 다수</li>
+              <li>종단 연구(Ava): Crisis기 사회적 위축 동반, 야간 활동 22.6%로 수면 파괴</li>
+            </ul>
+            <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+              <div class="caption">검증 변수 쌍</div>
+              <div class="body-sm" style="font-family: var(--font-mono); font-weight: 540;">companionship_prim ↔ social_network_scale</div>
+              <div class="caption" style="margin-top: var(--spacing-xs);">기대: 음(-)의 상관관계 (r < 0)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hypothesis 3 -->
+        <div class="color-block color-block-lilac" data-animate="h3" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 420px;">
+          <div>
+            <div class="eyebrow">가설 3</div>
+            <h2 class="headline" style="margin-top: var(--spacing-md);">자기개시 ↑ → 몰입도 ↑</h2>
+            <blockquote class="body" style="margin: var(--spacing-lg) 0; padding-left: var(--spacing-lg); border-left: 3px solid var(--primary); font-style: italic; line-height: 1.6;">
+              "속마음을 많이 털어놓을수록(<code style="font-family: var(--font-mono); background: var(--canvas); padding: 2px 6px; border-radius: var(--rounded-xs);">self_disclosure</code>) AI 몰입도(<code style="font-family: var(--font-mono); background: var(--canvas); padding: 2px 6px; border-radius: var(--rounded-xs);">intensity</code>)가 높아질 것이다."
+            </blockquote>
+          </div>
+          <div data-animate="h3-detail" style="margin-top: var(--spacing-xl); padding-top: var(--spacing-lg); border-top: 1px solid rgba(0,0,0,0.1);">
+            <p class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-sm);">이론적 근거</p>
+            <ul class="bullet-list" style="font-size: 15px; line-height: 1.7;">
+              <li>내면 감정을 AI에게 솔직히 고백할수록 정서적 애착·몰입 강화</li>
+              <li>거절 없는 수용 환경에서 자기개시 → 보상 회로 활성화 → 의존 심화</li>
+              <li>시코팬시(sycophancy) 효과: AI의 아첨·동조가 자기개시 강화 순환 유발</li>
+            </ul>
+            <div style="margin-top: var(--spacing-lg); padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+              <div class="caption">검증 변수 쌍</div>
+              <div class="body-sm" style="font-family: var(--font-mono); font-weight: 540;">self_disclosure ↔ intensity</div>
+              <div class="caption" style="margin-top: var(--spacing-xs);">기대: 양(+)의 상관관계 (r > 0)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6: Correlation Analysis Plan -->
+    <section class="slide slide-6" data-slide="6">
+      <div class="eyebrow" data-animate="eyebrow">핵심 변수 간 상관관계 분석 계획</div>
+      <h1 class="display-lg" data-animate="title">통계적 검증 프레임워크 및<br>기대 효과</h1>
+
+      <div class="content-grid">
+        <div class="panel">
+          <div class="color-block color-block-mint" data-animate="panel1" style="flex: 1; display: flex; flex-direction: column;">
+            <div class="eyebrow">분석 개요</div>
+            <h2 class="headline">상관관계 분석 체계 수립</h2>
+            <p class="body" style="margin-top: var(--spacing-md); line-height: 1.7;">본 연구에서는 데이터의 실제 실행 대신, 변수 간 상호 연관성의 방향과 강도를 파악하기 위해 상관관계 분석 체계를 수립함. 피어슨 상관계수(Pearson's r) 및 점이렬 상관(Point-biserial r)을 주 분석 도구로 활용.</p>
+            
+            <div style="margin-top: var(--spacing-xl);">
+              <p class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-md);">주요 분석 대상 변수 (5개)</p>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-sm);">
+                <span style="padding: var(--spacing-xs) var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-pill); font: var(--body-sm); font-weight: 540;" data-animate="v1">intensity</span>
+                <span style="padding: var(--spacing-xs) var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-pill); font: var(--body-sm); font-weight: 540;" data-animate="v2">well_being</span>
+                <span style="padding: var(--spacing-xs) var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-pill); font: var(--body-sm); font-weight: 540;" data-animate="v3">social_network_scale</span>
+                <span style="padding: var(--spacing-xs) var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-pill); font: var(--body-sm); font-weight: 540;" data-animate="v4">self_disclosure</span>
+                <span style="padding: var(--spacing-xs) var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-pill); font: var(--body-sm); font-weight: 540;" data-animate="v5">companionship_prim</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="color-block color-block-cream" data-animate="panel2" style="margin-top: var(--spacing-lg); flex: 1; display: flex; flex-direction: column;">
+            <div class="eyebrow">검증 항목 (3쌍)</div>
+            <h2 class="headline">주요 가설 검증 매트릭스</h2>
+            
+            <div style="margin-top: var(--spacing-lg); display: flex; flex-direction: column; gap: var(--spacing-md); flex: 1;">
+              <div data-animate="pair1" style="padding: var(--spacing-lg); background: var(--canvas); border-radius: var(--rounded-md); border-left: 4px solid var(--semantic-success);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm);">
+                  <div class="body-sm" style="font-weight: 540;">intensity ↔ well_being</div>
+                  <span style="padding: var(--spacing-xxs) var(--spacing-sm); background: var(--block-pink); border-radius: var(--rounded-pill); font: var(--caption);">음(-) 상관 기대</span>
+                </div>
+                <div class="caption" style="opacity: 0.7;">몰입도 증가 시 정신건강 악화 검증</div>
+              </div>
+              <div data-animate="pair2" style="padding: var(--spacing-lg); background: var(--canvas); border-radius: var(--rounded-md); border-left: 4px solid var(--semantic-success);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm);">
+                  <div class="body-sm" style="font-weight: 540;">companionship_prim ↔ social_network_scale</div>
+                  <span style="padding: var(--spacing-xxs) var(--spacing-sm); background: var(--block-pink); border-radius: var(--rounded-pill); font: var(--caption);">음(-) 상관 기대</span>
+                </div>
+                <div class="caption" style="opacity: 0.7;">AI 주 동반자 인식 그룹의 현실 관계망 축소 검증</div>
+              </div>
+              <div data-animate="pair3" style="padding: var(--spacing-lg); background: var(--canvas); border-radius: var(--rounded-md); border-left: 4px solid var(--accent-magenta);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-sm);">
+                  <div class="body-sm" style="font-weight: 540;">self_disclosure ↔ intensity</div>
+                  <span style="padding: var(--spacing-xxs) var(--spacing-sm); background: var(--block-lime); border-radius: var(--rounded-pill); font: var(--caption);">양(+) 상관 기대</span>
+                </div>
+                <div class="caption" style="opacity: 0.7;">자기개시 수준과 AI 몰입도 강화 순환 검증</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="color-block color-block-navy" data-animate="panel3" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="eyebrow">분석 방법론</div>
+              <h2 class="headline">통계적 접근 전략</h2>
+              <ul class="bullet-list" style="margin-top: var(--spacing-md);">
+                <li data-animate="m1">피어슨 상관계수: 연속 변수 간 선형 관계 강도·방향 측정</li>
+                <li data-animate="m2">점이렬 상관: 이진 변수(companionship_prim) vs 연속 변수</li>
+                <li data-animate="m3">유의수준 α = 0.05, 양측 검정</li>
+                <li data-animate="m4">효과 크기 해석: |r| ≥ 0.1(소), ≥ 0.3(중), ≥ 0.5(대)</li>
+                <li data-animate="m5">보완 분석: 편상관(나이, 성별, single 통제), 회귀분석으로 인과적 추론 보조</li>
+              </ul>
+            </div>
+            <div data-animate="impact" style="padding-top: var(--spacing-lg); border-top: 1px solid rgba(255,255,255,0.15);">
+              <p class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-sm); color: var(--block-lime);">분석을 통한 기대 효과</p>
+              <p class="body" style="line-height: 1.7; opacity: 0.9;">통계적 상관계수 산출을 통해 AI 챗봇에 대한 정서적 과의존이 사용자의 사회적 고립 및 정신건강 저하와 <strong>직접 연결되어 있음을 객관적으로 입증</strong>. 결과는 정책 제언(연령 인증 의무화, 세이프 모드 고도화, 이용 시간 제한 법제화) 및 서비스 설계 가이드라인 수립의 근거 자료로 활용.</p>
+            </div>
+          </div>
+
+          <div class="color-block color-block-pink" data-animate="panel4" style="margin-top: var(--spacing-lg); flex: 1; display: flex; flex-direction: column;">
+            <div class="eyebrow">데이터 기반 인사이트 (예비)</div>
+            <h2 class="headline">데이터셋에서 관찰된 패턴</h2>
+            <div style="margin-top: var(--spacing-lg); display: flex; flex-direction: column; gap: var(--spacing-md); flex: 1;">
+              <div data-animate="insight1" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-xs);">intensity ↔ well_ing 음의 경향</div>
+                <div class="caption">고몰입군(intensity > 0) 평균 well_being ≈ 4.2 vs 저몰입군 ≈ 5.1</div>
+              </div>
+              <div data-animate="insight2" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-xs);">companionship_prim=1 그룹의 social_network_scale 낮음</div>
+                <div class="caption">주동반자 인식군 평균 -0.32 vs 비인식군 평균 +0.41 (표준화 점수)</div>
+              </div>
+              <div data-animate="insight3" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md);">
+                <div class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-xs);">self_disclosure와 intensity 양의 관계</div>
+                <div class="caption">자기개시 상위 25% 그룹의 평균 intensity 약 0.8 높게 나타남</div>
+              </div>
+              <div data-animate="insight4" style="padding: var(--spacing-md); background: var(--canvas); border-radius: var(--rounded-md); border: 2px solid var(--accent-magenta);">
+                <div class="body-sm" style="font-weight: 540; margin-bottom: var(--spacing-xs); color: var(--accent-magenta);">⚠ 회귀 시 코팬시(sycophancy) 변수 통제 필요</div>
+                <div class="caption">종단 연구에서 AI 아첨 응답이 자기개시-몰입 순환 강화 확인 (Ava 사례)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="slide-nav" role="navigation" aria-label="슬라이드 네비게이션">
+    <button class="nav-dot active" data-slide="1" aria-label="1번 슬라이드"></button>
+    <button class="nav-dot" data-slide="2" aria-label="2번 슬라이드"></button>
+    <button class="nav-dot" data-slide="3" aria-label="3번 슬라이드"></button>
+    <button class="nav-dot" data-slide="4" aria-label="4번 슬라이드"></button>
+    <button class="nav-dot" data-slide="5" aria-label="5번 슬라이드"></button>
+    <button class="nav-dot" data-slide="6" aria-label="6번 슬라이드"></button>
+  </div>
+
+  <div class="slide-counter">
+    <span id="current-slide">1</span> / 6
+  </div>
+
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <script>
+    // Slide deck controller
+    const slides = document.querySelectorAll('.slide');
+    const navDots = document.querySelectorAll('.nav-dot');
+    const currentSlideEl = document.getElementById('current-slide');
+    const progressBar = document.getElementById('progress-bar');
+    let currentSlide = 1;
+    const totalSlides = 6; // Will be 6 total, but only 2 implemented now
+
+    // Animation timeline for each slide
+    function animateSlideIn(slideNum) {
+      const slide = document.querySelector(`.slide[data-slide="${slideNum}"]`);
+      if (!slide) return;
+
+      const elements = slide.querySelectorAll('[data-animate]');
+      
+      anime({
+        targets: elements,
+        opacity: [0, 1],
+        translateY: [{ value: [20, 0], easing: 'easeOutExpo' }, { value: [30, 0], easing: 'easeOutExpo' }],
+        translateX: [{ value: [-30, 0], easing: 'easeOutExpo' }, { value: [30, 0], easing: 'easeOutExpo' }],
+        scale: [{ value: [0.95, 1], easing: 'easeOutElastic(1, .5)' }],
+        delay: anime.stagger(120, { start: 200 }),
+        duration: 800,
+        easing: 'easeOutExpo'
+      });
+
+      // Counter animations for stat values
+      const counters = slide.querySelectorAll('[data-count]');
+      counters.forEach(counter => {
+        const target = parseFloat(counter.dataset.count);
+        const isDecimal = target % 1 !== 0;
+        anime({
+          targets: { val: 0 },
+          val: target,
+          duration: 1500,
+          easing: 'easeOutExpo',
+          delay: 400,
+          update: function(anim) {
+            const val = anim.animations[0].currentValue;
+            counter.textContent = isDecimal ? val.toFixed(2) : Math.round(val);
+          }
+        });
+      });
+    }
+
+    function animateSlideOut(slideNum) {
+      const slide = document.querySelector(`.slide[data-slide="${slideNum}"]`);
+      if (!slide) return;
+      
+      const elements = slide.querySelectorAll('[data-animate]');
+      anime({
+        targets: elements,
+        opacity: 0,
+        translateY: -10,
+        duration: 200,
+        easing: 'easeInQuad'
+      });
+    }
+
+    function goToSlide(slideNum) {
+      if (slideNum < 1 || slideNum > totalSlides) return;
+      
+      animateSlideOut(currentSlide);
+      
+      setTimeout(() => {
+        slides[currentSlide - 1].classList.remove('active');
+        navDots[currentSlide - 1].classList.remove('active');
+        
+        currentSlide = slideNum;
+        
+        slides[currentSlide - 1].classList.add('active');
+        navDots[currentSlide - 1].classList.add('active');
+        currentSlideEl.textContent = currentSlide;
+        
+        // Progress bar animation
+        const progress = (currentSlide - 1) / (totalSlides - 1);
+        anime({
+          targets: progressBar,
+          scaleX: progress,
+          duration: 400,
+          easing: 'easeOutQuad'
+        });
+        
+        animateSlideIn(currentSlide);
+      }, 200);
+    }
+
+    // Navigation click handlers
+    navDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => goToSlide(index + 1));
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        goToSlide(currentSlide - 1);
+      } else if (e.key >= '1' && e.key <= '6') {
+        goToSlide(parseInt(e.key));
+      }
+    });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) goToSlide(currentSlide + 1);
+        else goToSlide(currentSlide - 1);
+      }
+    }, { passive: true });
+
+    // Initialize first slide
+    document.addEventListener('DOMContentLoaded', () => {
+      slides[0].classList.add('active');
+      animateSlideIn(1);
+      
+      // Initial progress bar
+      anime({
+        targets: progressBar,
+        scaleX: 0,
+        duration: 0
+      });
+    });
+
+    // Reduced motion respect
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (prefersReducedMotion.matches) {
+      document.querySelectorAll('[data-animate]').forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
